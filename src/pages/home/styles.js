@@ -20,21 +20,21 @@ export const Container = styled.div`
   align-items: center;
 
   button {
-      background: #3b9eff;
-      margin: 5px 0 0;
-      padding: 0px 10px;
-      height: 28px;
-      font-weight: bold;
-      border-radius: 4px;
-      color: #fff;
-      transition: background 150ms ease-in-out;
-      &:hover {
-        background: ${lighten(0.03, '#3b9eff')};
-      }
-      &:active {
-        background: ${darken(0.05, '#3b9eff')};
-      }
+    background: #3b9eff;
+    margin: 5px 0 0;
+    padding: 0px 10px;
+    height: 28px;
+    font-weight: bold;
+    border-radius: 4px;
+    color: #fff;
+    transition: background 150ms ease-in-out;
+    &:hover {
+      background: ${lighten(0.03, '#3b9eff')};
     }
+    &:active {
+      background: ${darken(0.05, '#3b9eff')};
+    }
+  }
 `;
 
 export const TimePickerRow = styled.div`
@@ -50,5 +50,16 @@ export const TimePickerRow = styled.div`
       font-weight: bold;
       margin-bottom: 10px;
     }
+  }
+`;
+
+export const ResultContainer = styled.div`
+  display: flex;
+  margin-top: 40px;
+  padding: 20px;
+
+  span {
+    color: #fff;
+    font-weight: bold;
   }
 `;

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TimePicker from 'rc-time-picker';
 import moment from 'moment';
 
-import { Wrapper, Container, TimePickerRow } from './styles'
+import { Wrapper, Container, TimePickerRow, ResultContainer } from './styles'
 
 const now = moment().hour(0).minute(0);
 const defaultWorkload = moment().hour(8).minute(0);
@@ -14,9 +14,9 @@ export default class index extends Component {
     first: moment().hour(8).minute(0),
     second: moment().hour(12).minute(0),
     third: moment().hour(13).minute(0),
-    fourth: moment().hour(16).minute(0),
-    totalTime: now,
-    missing: now
+    fourth: moment().hour(17).minute(0),
+    totalTime: '',
+    missing: ''
   };
 
   handleSubmit() {
@@ -26,13 +26,12 @@ export default class index extends Component {
     const res2 = moment.utc(fourth.diff(third));
 
     const totalTime = res1.add(res2);
-    debugger
     if(defaultWorkload.isBefore(totalTime.toDate())) {
       const missing = moment(defaultWorkload.diff(totalTime));
       this.setState({ missing })
     }
 
-    this.setState({ totalTime })
+    this.setState({ totalTime: totalTime.format(format) })
   }
 
   render() {
@@ -88,10 +87,10 @@ export default class index extends Component {
 
           <button onClick={() => this.handleSubmit()}>Caucular</button>
 
-          <div>
-              {totalTime && <span>Total de horas: {totalTime.format(format)}</span>}
-              {missing && <span>Horas faltando: {missing.format(format)}</span>}
-          </div>
+          <ResultContainer>
+              {totalTime && <span>Total: {totalTime} horas trabalhadas</span>}
+              {/* {missing && <span>Horas faltando: {missing.format(format)}</span>} */}
+          </ResultContainer>
         </Container>
       </Wrapper>
 
