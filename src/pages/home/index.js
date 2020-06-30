@@ -1,99 +1,64 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react';
 import TimePicker from 'rc-time-picker';
 import moment from 'moment';
 
-import { Wrapper, Container, TimePickerRow, ResultContainer } from './styles'
+import { Container, ResultPanel } from './styles'
 
-const now = moment().hour(0).minute(0);
-const defaultWorkload = moment().hour(8).minute(0);
-const format = 'HH:mm';
+export default function Home() {
 
-export default class index extends Component {
+  // const now = moment().hour(0).minute(0);
+  // const defaultWorkload = moment().hour(8).minute(0);
+  const format = 'HH:mm';
 
-  state = {
-    first: moment().hour(8).minute(0),
-    second: moment().hour(12).minute(0),
-    third: moment().hour(13).minute(0),
-    fourth: moment().hour(17).minute(0),
-    totalTime: '',
-    missing: ''
+  const [ firstEntry, setFirstEntry ] = useState(moment().hour(8).minute(0))
+  const [ firstOut, setFirstOut ] = useState(moment().hour(12).minute(0))
+  const [ secondEntry, setSecondEntry ] = useState(moment().hour(13).minute(0))
+  const [ secondOut, setSecondOut ] = useState(moment().hour(17).minute(0))
+  const [ totalTime, setTotalTime ] = useState('')
+
+  const handleSubmit = () => {
+    const firstDiff = moment.utc(firstOut.diff(firstEntry));
+    const secondDiff = moment.utc(secondOut.diff(secondEntry));
+    const totalTime = firstDiff.add(secondDiff);
+
+    setTotalTime(totalTime.format(format))
   };
 
-  handleSubmit() {
-    const { first, second, third, fourth } = this.state;
+  const renderItemRow = (label, defaultValue, setFn) => (
+    <article>
+      <span>{label}</span>
+      <TimePicker
+        showSecond={false}
+        defaultValue={defaultValue}
+        onChange={(value) => setFn(value)}
+        inputReadOnly
+      />
+    </article>
+  );
 
-    const res1 = moment.utc(second.diff(first));
-    const res2 = moment.utc(fourth.diff(third));
+  const renderResultPanel = () => (
+    <ResultPanel>
+      {totalTime && <span>{totalTime} horas trabalhadas</span>}
+    </ResultPanel>
+  );
 
-    const totalTime = res1.add(res2);
-    if(defaultWorkload.isBefore(totalTime.toDate())) {
-      const missing = moment(defaultWorkload.diff(totalTime));
-      this.setState({ missing })
-    }
+  return (
+    <Container>
+      <main>
+        <section>
+          {renderItemRow("1° entrada", firstEntry, setFirstEntry)}
+          {renderItemRow("1° saida", firstOut, setFirstOut)}
+        </section>
 
-    this.setState({ totalTime: totalTime.format(format) })
-  }
+        <section>
+          {renderItemRow("2° entrada", secondEntry, setSecondEntry)}
+          {renderItemRow("2° saida", secondOut, setSecondOut)}
+        </section>
 
-  render() {
-    const { totalTime, missing, first, second, third, fourth } = this.state;
+        <button onClick={handleSubmit}>Calcular</button>
 
-    return (
-      <Wrapper>
-        <Container>
-          <TimePickerRow>
-            <div className='item-row'>
-              <span>1° entrada</span>
-              <TimePicker
-                showSecond={false}
-                defaultValue={now}
-                onChange={(value) => this.setState({ first: value })}
-                value={first}
-                inputReadOnly
-              />
-            </div>
-            <div className='item-row'>
-              <span>1° saida</span>
-              <TimePicker
-                showSecond={false}
-                defaultValue={now}
-                onChange={(value) => this.setState({ second: value })}
-                value={second}
-                inputReadOnly
-              />
-            </div>
-          </TimePickerRow>
-          <TimePickerRow>
-            <div className='item-row'>
-              <span>2° entrada</span>
-              <TimePicker
-                showSecond={false}
-                defaultValue={now}
-                onChange={(value) => this.setState({ third: value })}
-                value={third}
-                inputReadOnly
-              />
-            </div>
-            <div className='item-row'>
-              <span>2° saida</span>
-              <TimePicker
-                showSecond={false}
-                defaultValue={now}
-                onChange={(value) => this.setState({ fourth: value })}
-                value={fourth}
-                inputReadOnly
-              />
-            </div>
-          </TimePickerRow>
-
-          <button onClick={() => this.handleSubmit()}>Caucular</button>
-
-          <ResultContainer>
-              {totalTime && <span>Total: {totalTime} horas trabalhadas</span>}
-              {/* {missing && <span>Horas faltando: {missing.format(format)}</span>} */}
-          </ResultContainer>
-        </Container>
-      </Wrapper>
-
-    );
-  }
-}
+        {renderResultPanel()}
+      </main>
+    </Container>
+  );
+};
