@@ -55,6 +55,7 @@ export const Container = styled.div`
 
 export const ResultPanel = styled.div`
   display: flex;
+  flex-direction: column;
   margin-top: 40px;
   padding: 20px;
 
