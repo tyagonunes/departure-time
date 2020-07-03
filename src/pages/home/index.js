@@ -9,7 +9,6 @@ export default function Home() {
   const zero = moment().hour(0).minute(0);
   const format = 'HH:mm';
   
-  
   const [ defaultWorkload, setDefaultWorkload ] = useState(moment().hour(8).minute(0));
   const [ firstEntry, setFirstEntry ] = useState(moment().hour(8).minute(0));
   const [ firstOut, setFirstOut ] = useState(moment().hour(12).minute(0));
@@ -18,8 +17,24 @@ export default function Home() {
   const [ plannedOut, setPlannedOut ] = useState('');
   const [ totalTime, setTotalTime ] = useState('');
   const [ missingTime, setMissingTime ] = useState('');
+  const [ error, setError ] = useState({});
+
+
+  const isValidForm = () => {
+    
+    if(firstOut < firstEntry) { 
+      setError({ errorTimeInitial: true });
+    } else if(secondOut < secondEntry) {
+      setError({ errorTimeFinal: true });
+    } else {
+      return true;
+    };
+
+    return false;
+  }
 
   const handleSubmit = () => {
+    if(!isValidForm()) return
 
     const firstDiff = moment.utc(firstOut.diff(firstEntry));
     const secondDiff = moment.utc(secondOut.diff(secondEntry));
@@ -43,6 +58,7 @@ export default function Home() {
         showSecond={false}
         defaultValue={defaultValue}
         onChange={(value) => setFn(value)}
+        onOpen={() => setError({})}
         inputReadOnly
       />
     </article>
@@ -67,11 +83,18 @@ export default function Home() {
           {renderItemRow("1° entrada", firstEntry, setFirstEntry)}
           {renderItemRow("1° saida", firstOut, setFirstOut)}
         </section>
+        <div className="error">
+          {error && error.errorTimeInitial && <span>A hora inicial não pode ser maior que a final</span>}
+        </div>
 
         <section>
           {renderItemRow("2° entrada", secondEntry, setSecondEntry)}
           {renderItemRow("2° saida", secondOut, setSecondOut)}
         </section>
+        
+        <div className="error">
+          {error && error.errorTimeFinal && <span>A hora inicial não pode ser maior que a final</span>}
+        </div>
 
         <button onClick={handleSubmit}>Calcular</button>
 

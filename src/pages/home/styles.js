@@ -34,6 +34,18 @@ export const Container = styled.div`
       }
     }
 
+    .error {
+      display: block;
+      margin-bottom: 10px;
+      span {
+        background-color: #ff0033;
+        color: #fff;
+        padding: 5px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+    }
+
     button {
       background: #3b9eff;
       margin: 5px 0 0;
